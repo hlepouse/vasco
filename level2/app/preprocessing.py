@@ -4,20 +4,15 @@ def convertPercentToFloat(rate):
 
     return rate / 100
 
-def isRateKey(key):
-
-    return key.endswith(os.getenv('RATE_SUFFIX'))
-
 def preprocessTargets(targetsList):
 
     targetsDict = {}
 
     for target in targetsList:
 
-        for targetKey in target.keys():
+        for targetMetric in os.getenv('RATE_METRICS').split(","):
 
-            if isRateKey(targetKey):
-                target[targetKey] = convertPercentToFloat(target[targetKey])
+            target[targetMetric] = convertPercentToFloat(target[targetMetric])
 
         targetsDict[target["year"], target["month"]] = target
 

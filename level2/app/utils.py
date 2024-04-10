@@ -1,12 +1,12 @@
 from datetime import datetime
 
-def computeMonthsInQuarter(year, quarter):
+def computeStartEndMonths(quarter):
 
     startMonth = (quarter - 1) * 3 + 1
 
-    return [ (year, startMonth + monthIndex) for monthIndex in range(3) ]
+    return startMonth, startMonth+2
 
-def computePreviousMonth(year, month):
+def computePreviousYearMonth(year, month):
 
     if month >= 2:
         return year, month-1
@@ -14,7 +14,7 @@ def computePreviousMonth(year, month):
     return year-1, 12
 
 # This is a generator that iterates between two given months
-def monthsBetween(startYear, startMonth, endYear, endMonth):
+def yearMonthsBetween(startYear, startMonth, endYear, endMonth):
 
     year = startYear
     month = startMonth
@@ -28,3 +28,19 @@ def monthsBetween(startYear, startMonth, endYear, endMonth):
         if month == 13:
             year +=1
             month = 1
+
+# Checks if there is at least one month in the provided range
+# We don't need to check for the month to be between 1 and 12, because
+# this is checked at schema validation
+def isYearMonthRangeValid(startYear, startMonth, endYear, endMonth):
+
+    if startYear > endYear:
+        return False
+    
+    if startYear < endYear:
+        return True
+    
+    if startMonth > endMonth:
+        return False
+    
+    return True
