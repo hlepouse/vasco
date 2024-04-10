@@ -1,4 +1,4 @@
-from app import isRateKey
+from app.preprocessing import isRateKey
 
 def testValidRateKey():
 

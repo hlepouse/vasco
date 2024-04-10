@@ -1,4 +1,4 @@
-from app import preprocessTargets
+from app.preprocessing import preprocessTargets
 
 def testOneItem():
 

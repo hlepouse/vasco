@@ -1,4 +1,4 @@
-from app import TargetPerMonthInputSchema
+from app.schemas import TargetPerMonthInputSchema
 import pytest
 from marshmallow import ValidationError
 

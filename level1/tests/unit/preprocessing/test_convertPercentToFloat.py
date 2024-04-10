@@ -1,4 +1,4 @@
-from app import convertPercentToFloat
+from app.preprocessing import convertPercentToFloat
 
 def testValidConversion():
 
