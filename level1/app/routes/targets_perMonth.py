@@ -24,11 +24,14 @@ def validate(jsonInput):
     
     return input, None
 
-def process(input):
+def process(targets, input):
 
-    targets = current_app.config['TARGETS']
+    target = targets.get((input["year"], input["month"]))
 
-    return targets[input["year"], input["month"]]
+    if target is None:
+        return {}
+    
+    return target
     
 @trpc.route('/targets.perMonth')
 def targets_perMonth():
@@ -39,4 +42,6 @@ def targets_perMonth():
     if error is not None:
         return input, error
     
-    return process(input)
+    targets = current_app.config['TARGETS']
+    
+    return process(targets, input)
