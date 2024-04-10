@@ -1,3 +1,6 @@
+# This is a generic method to validate a json input
+# It's used in multiple routes, since the behaviour at this step is the same
+
 from json import JSONDecodeError
 import json
 from marshmallow import ValidationError

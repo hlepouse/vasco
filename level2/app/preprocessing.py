@@ -1,3 +1,5 @@
+# These are all functions necessary to process the data file at application start
+
 import os
 
 def convertPercentToFloat(rate):

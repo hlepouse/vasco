@@ -1,3 +1,5 @@
+# These are the schemas used to validate the json inputs of the routes
+
 from marshmallow import Schema, fields
 import os
 

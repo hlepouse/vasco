@@ -1,3 +1,7 @@
+# These are generic computing functions, designed to compute metrics for any range of months
+# They are used in quaterly computations
+# They cannot be used in monthly computations, because the formulas don't match
+
 from app.utils.yearMonth import yearMonthsBetween, computePreviousYearMonth
 import os
 

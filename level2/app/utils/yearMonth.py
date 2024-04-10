@@ -1,3 +1,7 @@
+# These are useful functions that deal with year/month tuples
+# These operations could have been handled with the datetime library,
+# however this lib can only handle dates (not just months), it would make the code less readable
+
 from datetime import datetime
 
 def computeStartEndMonths(quarter):
