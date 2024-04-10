@@ -39,8 +39,6 @@ def testProcess():
 
     targets = {
         (2022,6): {
-            "month": 6,
-            "year": 2022,
             "recurringRevenue": 145000.0,
             "churnRate": 0.01,
             "downgradeRate": 0.03,

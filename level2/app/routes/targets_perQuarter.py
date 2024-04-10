@@ -2,9 +2,10 @@ from flask import request, current_app
 import json
 from json import JSONDecodeError
 from marshmallow import ValidationError
-from app.schemas import TargetPerMonthInputSchema
+from app.schemas import TargetPerQuarterInputSchema
 from . import trpc
-from app.computing import isDataAvailable
+from app.computing import computeMetrics, isDataAvailable
+from app.utils import computeStartEndMonths
 
 def validate(jsonInput):
 
@@ -16,7 +17,7 @@ def validate(jsonInput):
     except JSONDecodeError as e:
         return str(e), 422
     
-    schema = TargetPerMonthInputSchema()
+    schema = TargetPerQuarterInputSchema()
 
     try:
         input = schema.load(input)
@@ -27,18 +28,20 @@ def validate(jsonInput):
 
 def process(targets, input):
 
-    if not isDataAvailable(targets, input["year"], input["month"], input["year"], input["month"]):
+    startMonth, endMonth = computeStartEndMonths(input["quarter"])
+
+    if not isDataAvailable(targets, input["year"], startMonth, input["year"], endMonth):
         return {}
 
-    target = targets[input["year"], input["month"]]
+    target = computeMetrics(targets, input["year"], startMonth, input["year"], endMonth)
     
     target["year"] = input["year"]
-    target["month"] = input["month"]
+    target["quarter"] = input["quarter"]
     
     return target
     
-@trpc.route('/targets.perMonth')
-def targets_perMonth():
+@trpc.route('/targets.perQuarter')
+def targets_perQuarter():
 
     jsonInput = request.args.get('input')
 

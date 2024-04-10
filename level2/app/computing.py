@@ -24,6 +24,7 @@ def computePreviousRecurringRevenue(targets, year, month):
     
     return previousTarget["recurringRevenue"]
 
+# This function must only be called on a valid range
 def computeAverageRecurringRevenue(targets, startYear, startMonth, endYear, endMonth):
 
     countMonths = 0
@@ -34,8 +35,7 @@ def computeAverageRecurringRevenue(targets, startYear, startMonth, endYear, endM
         countMonths += 1
         sumRecurringRevenue += targets[year,month]["recurringRevenue"]
 
-    # We don't check for division by zero, because the range of months cannot be empty :
-    # this is checked by a call to the function utils.isYearMonthRangeValid
+    # We don't check for division by zero, because the range is supposed to be valid
     return sumRecurringRevenue / countMonths
 
 def computeRate(targets, rateMetric, averageRecurringRevenue, startYear, startMonth, endYear, endMonth):
