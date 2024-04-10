@@ -1,10 +1,12 @@
+import os
+
 def convertPercentToFloat(rate):
 
     return rate / 100
 
 def isRateKey(key):
 
-    return key.endswith("Rate")
+    return key.endswith(os.getenv('RATE_SUFFIX'))
 
 def preprocessTargets(targetsList):
 
