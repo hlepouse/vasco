@@ -12,8 +12,10 @@ def preprocess_targets(json_file):
 
     for target in targets_list:
 
-        for rateKey in ["churnRate", "downgradeRate", "upgradeRate"]:
-            target[rateKey] = convert_percent_to_float(target[rateKey])
+        for targetKey in target.keys():
+
+            if targetKey.endswith("Rate"):
+                target[targetKey] = convert_percent_to_float(target[targetKey])
 
         targets_dict[target["year"], target["month"]] = target
 
