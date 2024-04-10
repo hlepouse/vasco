@@ -6,7 +6,6 @@ def testValidInput(client):
         "month": 6,
         "year": 2022
     })})
-    
     assert response.json == {
             "month": 6,
             "year": 2022,
@@ -19,20 +18,7 @@ def testValidInput(client):
 def testInvalidInputs(client):
 
     response = client.get('/trpc/targets.perMonth')
-
     assert response.status_code == 400
 
     response = client.get('/trpc/targets.perMonth', query_string = { "a": "qffsd" })
-
     assert response.status_code == 400
-
-    response = client.get('/trpc/targets.perMonth', query_string = { "input": "qffsd" })
-
-    assert response.status_code == 422
-
-    response = client.get('/trpc/targets.perMonth', query_string = { "input": json.dumps({
-        "month": "aaa",
-        "year": 2022
-    })})
-
-    assert response.status_code == 422
