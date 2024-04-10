@@ -1,4 +1,4 @@
-from app.utils import computeStartEndMonths
+from app.utils.yearMonth import computeStartEndMonths
 
 def test():
 

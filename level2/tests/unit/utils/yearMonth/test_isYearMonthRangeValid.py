@@ -1,4 +1,4 @@
-from app.utils import isYearMonthRangeValid
+from app.utils.yearMonth import isYearMonthRangeValid
 
 def test():
 

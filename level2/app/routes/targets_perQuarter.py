@@ -1,30 +1,9 @@
 from flask import request, current_app
-import json
-from json import JSONDecodeError
-from marshmallow import ValidationError
 from app.schemas import TargetPerQuarterInputSchema
 from . import trpc
 from app.computing import computeMetrics, isDataAvailable
-from app.utils import computeStartEndMonths
-
-def validate(jsonInput):
-
-    if jsonInput is None:
-        return {"message": "No input provided"}, 400
-
-    try:
-        input = json.loads(jsonInput)
-    except JSONDecodeError as e:
-        return str(e), 422
-    
-    schema = TargetPerQuarterInputSchema()
-
-    try:
-        input = schema.load(input)
-    except ValidationError as e:
-        return e.messages, 422
-    
-    return input, None
+from app.utils.yearMonth import computeStartEndMonths
+from app.utils.schema import validate
 
 def process(targets, input):
 
@@ -45,7 +24,7 @@ def targets_perQuarter():
 
     jsonInput = request.args.get('input')
 
-    input, error = validate(jsonInput)
+    input, error = validate(jsonInput, TargetPerQuarterInputSchema)
     if error is not None:
         return input, error
     

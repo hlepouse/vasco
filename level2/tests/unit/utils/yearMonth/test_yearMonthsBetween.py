@@ -1,4 +1,4 @@
-from app.utils import yearMonthsBetween
+from app.utils.yearMonth import yearMonthsBetween
 
 def test():
 

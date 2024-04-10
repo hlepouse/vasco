@@ -1,4 +1,4 @@
-from app.utils import computePreviousYearMonth
+from app.utils.yearMonth import computePreviousYearMonth
 
 def test():
 

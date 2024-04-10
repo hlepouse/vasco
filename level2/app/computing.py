@@ -1,4 +1,4 @@
-from app.utils import yearMonthsBetween, computePreviousYearMonth
+from app.utils.yearMonth import yearMonthsBetween, computePreviousYearMonth
 import os
 
 def isDataAvailable(targets, startYear, startMonth, endYear, endMonth):

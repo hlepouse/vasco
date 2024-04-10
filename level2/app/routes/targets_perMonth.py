@@ -1,29 +1,8 @@
 from flask import request, current_app
-import json
-from json import JSONDecodeError
-from marshmallow import ValidationError
 from app.schemas import TargetPerMonthInputSchema
 from . import trpc
 from app.computing import isDataAvailable
-
-def validate(jsonInput):
-
-    if jsonInput is None:
-        return {"message": "No input provided"}, 400
-
-    try:
-        input = json.loads(jsonInput)
-    except JSONDecodeError as e:
-        return str(e), 422
-    
-    schema = TargetPerMonthInputSchema()
-
-    try:
-        input = schema.load(input)
-    except ValidationError as e:
-        return e.messages, 422
-    
-    return input, None
+from app.utils.schema import validate
 
 def process(targets, input):
 
@@ -42,7 +21,7 @@ def targets_perMonth():
 
     jsonInput = request.args.get('input')
 
-    input, error = validate(jsonInput)
+    input, error = validate(jsonInput, TargetPerMonthInputSchema)
     if error is not None:
         return input, error
     
