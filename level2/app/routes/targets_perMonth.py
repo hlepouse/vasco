@@ -31,6 +31,9 @@ def process(targets, input):
     if target is None:
         return {}
     
+    target["year"] = input["year"]
+    target["month"] = input["month"]
+    
     return target
     
 @trpc.route('/targets.perMonth')

@@ -14,6 +14,12 @@ def preprocessTargets(targetsList):
 
             target[targetMetric] = convertPercentToFloat(target[targetMetric])
 
-        targetsDict[target["year"], target["month"]] = target
+        year = target["year"]
+        month = target["month"]
+
+        del target["year"]
+        del target["month"]
+
+        targetsDict[year, month] = target
 
     return targetsDict

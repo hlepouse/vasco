@@ -13,8 +13,6 @@ def testOneItem():
     ]
 
     assert preprocessTargets(targetsList) == { (2000,4) : {
-            "year": 2000,
-            "month": 4,
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25
@@ -41,15 +39,11 @@ def testValidTwoItemsWithRates():
 
     assert preprocessTargets(targetsList) == {
             (2000,4) : {
-                "year": 2000,
-                "month": 4,
                 "churnRate": 1,
                 "downgradeRate": 0.5,
                 "upgradeRate": 0.25
             },
             (2000,5) : {
-                "year": 2000,
-                "month": 5,
                 "churnRate": 0.5,
                 "downgradeRate": 0.5,
                 "upgradeRate": 0.25
@@ -76,8 +70,6 @@ def testDuplicates():
     ]
 
     assert preprocessTargets(targetsList) == { (2000,4) : {
-            "year": 2000,
-            "month": 4,
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25

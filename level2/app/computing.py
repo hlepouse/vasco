@@ -32,7 +32,7 @@ def computeAverageRecurringRevenue(targets, startYear, startMonth, endYear, endM
     for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth):
 
         countMonths += 1
-        sumRecurringRevenue += targets[(year,month)]["recurringRevenue"]
+        sumRecurringRevenue += targets[year,month]["recurringRevenue"]
 
     # We don't check for division by zero, because the range of months cannot be empty :
     # this is checked by a call to the function utils.isYearMonthRangeValid
@@ -45,8 +45,8 @@ def computeRate(targets, rateMetric, averageRecurringRevenue, startYear, startMo
 
     for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth):
 
-        amount += previousRecurringRevenue * targets[(year,month)][rateMetric]
-        previousRecurringRevenue = targets[(year,month)]["recurringRevenue"]
+        amount += previousRecurringRevenue * targets[year,month][rateMetric]
+        previousRecurringRevenue = targets[year,month]["recurringRevenue"]
 
     # In case of average recurring revenue at zero, the rate cannot be computed
     # Do not return some random value : return None, and let the frontend decide how to display it
