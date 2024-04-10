@@ -55,7 +55,7 @@ def computeRate(targets, rateMetric, averageRecurringRevenue, startYear, startMo
     # In case of average recurring revenue at zero, the rate cannot be computed
     # Do not return some random value : return None, and let the frontend decide how to display it
     try:
-        rate = amount / averageRecurringRevenue
+        rate = round(amount / averageRecurringRevenue, 3)
     except ZeroDivisionError as e:
         rate = None
 
