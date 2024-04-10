@@ -19,6 +19,8 @@ def testProcess():
             "churnRate": 0.01,
             "downgradeRate": 0.03,
             "upgradeRate": 0.02,
+            "acquisitionTarget": 45000,
+            "expansionTarget": 2000
         }
 
     assert process(targets, {"year": 2021, "month": 6}) == {}

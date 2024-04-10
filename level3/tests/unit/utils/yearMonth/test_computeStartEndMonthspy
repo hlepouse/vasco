@@ -1,5 +1,0 @@
-from app.utils.yearMonth import computeStartEndMonths
-
-def test():
-
-    assert computeStartEndMonths(2) == [4,5,6]

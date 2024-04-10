@@ -1,7 +1,7 @@
 from flask import request, current_app
 from app.schemas import TargetPerMonthInputSchema
 from . import trpc
-from app.computing import isDataAvailable
+from app.computing import isDataAvailable, computeRangeMetrics
 from app.utils.schema import validate
 
 def process(targets, input):
@@ -9,7 +9,7 @@ def process(targets, input):
     if not isDataAvailable(targets, input["year"], input["month"], input["year"], input["month"]):
         return {}
 
-    target = targets[input["year"], input["month"]]
+    target = computeRangeMetrics(targets, input["year"], input["month"], input["year"], input["month"])
     
     target["year"] = input["year"]
     target["month"] = input["month"]

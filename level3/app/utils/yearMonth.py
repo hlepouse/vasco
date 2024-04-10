@@ -2,15 +2,13 @@
 # These operations could have been handled with the datetime library,
 # however this lib can only handle dates (not just months), it would make the code less readable
 
-from datetime import datetime
-
-def computeStartEndMonths(quarter):
+def startEndMonths(quarter):
 
     startMonth = (quarter - 1) * 3 + 1
 
     return startMonth, startMonth+2
 
-def computePreviousYearMonth(year, month):
+def previousYearMonth(year, month):
 
     if month >= 2:
         return year, month-1
@@ -18,6 +16,7 @@ def computePreviousYearMonth(year, month):
     return year-1, 12
 
 # This is a generator that iterates between two given months
+# End year/month is included
 def yearMonthsBetween(startYear, startMonth, endYear, endMonth):
 
     year = startYear
@@ -32,6 +31,11 @@ def yearMonthsBetween(startYear, startMonth, endYear, endMonth):
         if month == 13:
             year +=1
             month = 1
+
+# End year/month is included
+def nbYearMonthsBetween(startYear, startMonth, endYear, endMonth):
+
+    return (endYear - startYear) * 12 + endMonth - startMonth + 1
 
 # Checks if there is at least one month in the provided range
 # We don't need to check for the month to be between 1 and 12, because

@@ -1,4 +1,4 @@
-from app.computing import computeRate
+from app.computing import computeRangeRate
 
 def test():
 
@@ -13,5 +13,5 @@ def test():
         }
     }
 
-    # (100000 * 0.01 + 10 * 0.02) / 15
-    assert computeRate(targets, "churnRate", 15, 2000, 1, 2000, 2) == 66.68
+    # (10 * 0.01 + 10 * 0.02) / 15
+    assert round(computeRangeRate(targets, "churnRate", 10, 15, 2000, 1, 2000, 2), 3) == 0.02

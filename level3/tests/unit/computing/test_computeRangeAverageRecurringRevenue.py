@@ -1,4 +1,4 @@
-from app.computing import computeAverageRecurringRevenue
+from app.computing import computeRangeAverageRecurringRevenue
 
 def test():
 
@@ -11,4 +11,4 @@ def test():
         }
     }
 
-    assert computeAverageRecurringRevenue(targets, 2000, 1, 2000, 2) == 15
+    assert computeRangeAverageRecurringRevenue(targets, 2, 2000, 1, 2000, 2) == 15

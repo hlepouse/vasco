@@ -1,4 +1,4 @@
-from app.computing import computeMetrics
+from app.computing import computeRangeMetrics
 
 def test():
 
@@ -17,12 +17,14 @@ def test():
         }
     }
 
-    # (100000 * 0.01 + 10 * 0.02) / 15
-    assert computeMetrics(targets, 2000, 1, 2000, 2) == {
+    # (100000 * 0.01 + 10 * 0.02) / 15 = 66.68
+    assert computeRangeMetrics(targets, 2000, 1, 2000, 2) == {
         "recurringRevenue": 20,
         "churnRate": 66.68,
         "downgradeRate": 66.68,
-        "upgradeRate": 66.68
+        "upgradeRate": 66.68,
+        "acquisitionTarget": -99980,
+        "expansionTarget": 1000.2
     }
 
 def testDivisionByZero():
@@ -42,9 +44,12 @@ def testDivisionByZero():
         }
     }
 
-    assert computeMetrics(targets, 2000, 1, 2000, 2) == {
+    assert computeRangeMetrics(targets, 2000, 1, 2000, 2) == {
         "recurringRevenue": 0,
         "churnRate": None,
         "downgradeRate": None,
-        "upgradeRate": None
+        "upgradeRate": None,
+        "acquisitionTarget": -100000,
+        "expansionTarget": 1000
+
     }
