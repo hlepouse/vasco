@@ -1,38 +1,66 @@
 from flask import Flask, request
 import json
+from json import JSONDecodeError
+from marshmallow import Schema, fields, ValidationError
 
-def convert_percent_to_float(rate):
+def convertPercentToFloat(rate):
 
     return rate / 100
 
-def preprocess_targets(json_file):
+def isRateKey(key):
 
-    targets_list = json.load(json_file)
-    targets_dict = {}
+    return key.endswith("Rate")
 
-    for target in targets_list:
+def preprocessTargets(targetsList):
+
+    targetsDict = {}
+
+    for target in targetsList:
 
         for targetKey in target.keys():
 
-            if targetKey.endswith("Rate"):
-                target[targetKey] = convert_percent_to_float(target[targetKey])
+            if isRateKey(targetKey):
+                target[targetKey] = convertPercentToFloat(target[targetKey])
 
-        targets_dict[target["year"], target["month"]] = target
+        targetsDict[target["year"], target["month"]] = target
 
-    return targets_dict
+    return targetsDict
 
+class TargetPerMonthInputSchema(Schema):
+    year = fields.Int(required=True)
+    month = fields.Int(required=True)
+
+# Factory method to create app
+# The snake case is required for Flask
 def create_app():
 
     app = Flask(__name__)
 
-    with open("data/targets.json") as json_file:
+    with open("data/targets.json") as jsonFile:
 
-        app.config['TARGETS'] = preprocess_targets(json_file)
+        targetsList = json.load(jsonFile)
+    
+    app.config['TARGETS'] = preprocessTargets(targetsList)
 
     @app.route('/trpc/targets.perMonth')
-    def targets_perMonth():
+    def targetsPerMonth():
 
-        input = json.loads(request.args.get('input'))
+        jsonInput = request.args.get('input')
+
+        if jsonInput is None:
+            return {"message": "No input provided"}, 400
+
+        try:
+            input = json.loads(jsonInput)
+        except JSONDecodeError as e:
+            return str(e), 422
+        
+        schema = TargetPerMonthInputSchema()
+
+        try:
+            input = schema.load(input)
+        except ValidationError as e:
+            return e.messages, 422
 
         return app.config['TARGETS'][input["year"], input["month"]]
 
