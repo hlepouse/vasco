@@ -1,22 +1,23 @@
 from app.routes.targets_perQuarter import validate, process
 import json
+from app.utils.YearMonth import YearMonth
 
 def testProcess():
 
     targets = {
-        (2022,1): {
+        YearMonth(2022,1): {
             "recurringRevenue": 100000,
             "churnRate": 0.01,
             "downgradeRate": 0.01,
             "upgradeRate": 0.01,
         },
-        (2022,2): {
+        YearMonth(2022,2): {
             "recurringRevenue": 100000,
             "churnRate": 0.01,
             "downgradeRate": 0.01,
             "upgradeRate": 0.01,
         },
-        (2022,3): {
+        YearMonth(2022,3): {
             "recurringRevenue": 100000,
             "churnRate": 0.01,
             "downgradeRate": 0.01,

@@ -2,26 +2,27 @@
 # They are used in quaterly computations
 # They cannot be used in monthly computations, because the formulas don't match
 
-from app.utils.yearMonth import yearMonthsBetween, previousYearMonth, nbYearMonthsBetween
+from app.utils.YearMonth import YearMonth
+from app.utils.YearMonthRange import YearMonthRange
 import os
 
-def isDataAvailable(targets, startYear, startMonth, endYear, endMonth):
+def isDataAvailable(targets, yearMonthRange):
 
-    for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth):
+    for yearMonth in yearMonthRange.iterate():
 
-        if targets.get((year,month)) is None:
+        if targets.get(yearMonth) is None:
             return False
         
     return True
 
-def computeRangeRecurringRevenue(targets, startYear, startMonth, endYear, endMonth):
+def computeRangeRecurringRevenue(targets, yearMonthRange):
 
-    return targets[(endYear,endMonth)]["recurringRevenue"]
+    return targets[yearMonthRange.end]["recurringRevenue"]
 
-def computePreviousRecurringRevenue(targets, year, month):
+def computePreviousRecurringRevenue(targets, yearMonth):
 
-    previousYear, previousMonth = previousYearMonth(year, month)
-    previousTarget = targets.get((previousYear, previousMonth))
+    previousYearMonth = yearMonth.previous()
+    previousTarget = targets.get(previousYearMonth)
 
     if previousTarget is None:
         return float(os.getenv("DEFAULT_PREVIOUS_RECURRING_REVENUE"))
@@ -29,24 +30,26 @@ def computePreviousRecurringRevenue(targets, year, month):
     return previousTarget["recurringRevenue"]
 
 # This function must only be called with nbYearMonths > 0
-def computeRangeAverageRecurringRevenue(targets, nbYearMonths, startYear, startMonth, endYear, endMonth):
+def computeRangeAverageRecurringRevenue(targets, yearMonthRange):
 
     sumRecurringRevenue = sum([
-        targets[year,month]["recurringRevenue"]
-        for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth)
+        targets[yearMonth]["recurringRevenue"]
+        for yearMonth in yearMonthRange.iterate()
     ])
 
-    # We don't check for division by zero, because nbYearMonths > 0
+    nbYearMonths = yearMonthRange.size()
+
+    # The constructor or YearMonthRange enforces size >= 1, so no problem with division
     return sumRecurringRevenue / nbYearMonths
 
-def computeRangeRate(targets, rateMetric, previousRecurringRevenue, averageRecurringRevenue, startYear, startMonth, endYear, endMonth):
+def computeRangeRate(targets, rateMetric, previousRecurringRevenue, averageRecurringRevenue, yearMonthRange):
 
     amount = 0
 
-    for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth):
+    for yearMonth in yearMonthRange.iterate():
 
-        amount += previousRecurringRevenue * targets[year,month][rateMetric]
-        previousRecurringRevenue = targets[year,month]["recurringRevenue"]
+        amount += previousRecurringRevenue * targets[yearMonth][rateMetric]
+        previousRecurringRevenue = targets[yearMonth]["recurringRevenue"]
 
     # In case of average recurring revenue at zero, the rate cannot be computed
     # Do not return some random value : return None, and let the caller decide how to display it
@@ -57,65 +60,65 @@ def computeRangeRate(targets, rateMetric, previousRecurringRevenue, averageRecur
 
     return rate
 
-def computeAcquisitionTarget(targets, year, month):
+def computeAcquisitionTarget(targets, yearMonth):
 
-    previousRecurringRevenue = computePreviousRecurringRevenue(targets, year, month)
+    previousRecurringRevenue = computePreviousRecurringRevenue(targets, yearMonth)
 
-    return targets[year,month]["recurringRevenue"] - previousRecurringRevenue
+    return targets[yearMonth]["recurringRevenue"] - previousRecurringRevenue
 
-def computeRangeAcquisitionTarget(targets, startYear, startMonth, endYear, endMonth):
+def computeRangeAcquisitionTarget(targets, yearMonthRange):
 
     return sum([
-        computeAcquisitionTarget(targets, year, month)
-        for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth)
+        computeAcquisitionTarget(targets, yearMonth)
+        for yearMonth in yearMonthRange.iterate()
     ])
 
-def computeNetRetentionRate(targets, year, month):
+def computeNetRetentionRate(targets, yearMonth):
 
-    targetMonth = targets[year,month]
+    targetMonth = targets[yearMonth]
 
     return 1 - targetMonth["downgradeRate"] + targetMonth["upgradeRate"] - targetMonth["churnRate"]
 
-def computeExpansionTarget(targets, year, month):
+def computeExpansionTarget(targets, yearMonth):
 
-    netRetentionRate = computeNetRetentionRate(targets, year, month)
-    previousRecurringRevenue = computePreviousRecurringRevenue(targets, year, month)
+    netRetentionRate = computeNetRetentionRate(targets, yearMonth)
+    previousRecurringRevenue = computePreviousRecurringRevenue(targets, yearMonth)
 
     return previousRecurringRevenue * (1 - netRetentionRate)
 
-def computeRangeExpansionTarget(targets, startYear, startMonth, endYear, endMonth):
+def computeRangeExpansionTarget(targets, yearMonthRange):
 
     return sum([
-        computeExpansionTarget(targets, year, month)
-        for year,month in yearMonthsBetween(startYear, startMonth, endYear, endMonth)
+        computeExpansionTarget(targets, yearMonth)
+        for yearMonth in yearMonthRange.iterate()
     ])
 
-def computeRangeMetrics(targets, startYear, startMonth, endYear, endMonth):
+def computeRangeMetrics(targets, yearMonthRange):
 
     metrics = {}
 
-    nbYearMonths = nbYearMonthsBetween(startYear, startMonth, endYear, endMonth)
+    nbYearMonths = yearMonthRange.size()
     rateMetricsList = os.getenv("RATE_METRICS").split(",")
 
-    rangePreviousRecurringRevenue = computePreviousRecurringRevenue(targets, startYear, startMonth)
-    averageRecurringRevenue = computeRangeAverageRecurringRevenue(targets, nbYearMonths, startYear, startMonth, endYear, endMonth)
+    rangePreviousRecurringRevenue = computePreviousRecurringRevenue(targets, yearMonthRange.start)
+    averageRecurringRevenue = computeRangeAverageRecurringRevenue(targets, yearMonthRange)
 
     if nbYearMonths == 1:
 
         metrics = {
-            rateMetric: targets[startYear, startMonth][rateMetric]
+            rateMetric: targets[yearMonthRange.start][rateMetric]
             for rateMetric in rateMetricsList
         }
     else:
 
         metrics = {
-            rateMetric: computeRangeRate(targets, rateMetric, rangePreviousRecurringRevenue, averageRecurringRevenue, startYear, startMonth, endYear, endMonth)
+            rateMetric: computeRangeRate(targets, rateMetric, rangePreviousRecurringRevenue, averageRecurringRevenue, yearMonthRange)
             for rateMetric in rateMetricsList
         }
 
-    metrics["recurringRevenue"] = round(computeRangeRecurringRevenue(targets, startYear, startMonth, endYear, endMonth), 3)
-    metrics["acquisitionTarget"] = round(computeRangeAcquisitionTarget(targets, startYear, startMonth, endYear, endMonth), 3)
-    metrics["expansionTarget"] = round(computeRangeExpansionTarget(targets, startYear, startMonth, endYear, endMonth), 3)
+    metrics["recurringRevenue"] = round(computeRangeRecurringRevenue(targets, yearMonthRange), 3)
+    metrics["acquisitionTarget"] = round(computeRangeAcquisitionTarget(targets, yearMonthRange), 3)
+    metrics["expansionTarget"] = round(computeRangeExpansionTarget(targets, yearMonthRange), 3)
 
     return metrics
 

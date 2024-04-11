@@ -3,13 +3,18 @@ from app.schemas import TargetPerMonthInputSchema
 from . import trpc
 from app.computing import isDataAvailable, computeRangeMetrics
 from app.utils.schema import validate
+from app.utils.YearMonthRange import YearMonthRange
+from app.utils.YearMonth import YearMonth
 
 def process(targets, input):
 
-    if not isDataAvailable(targets, input["year"], input["month"], input["year"], input["month"]):
+    yearMonth = YearMonth(input["year"], input["month"])
+    yearMonthRange = YearMonthRange(yearMonth, yearMonth)
+
+    if not isDataAvailable(targets, yearMonthRange):
         return {}
 
-    target = computeRangeMetrics(targets, input["year"], input["month"], input["year"], input["month"])
+    target = computeRangeMetrics(targets, yearMonthRange)
     
     target["year"] = input["year"]
     target["month"] = input["month"]

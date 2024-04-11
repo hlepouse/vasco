@@ -1,5 +1,7 @@
 # Vasco Backend Challenge
 
+This application was developed for Python 3.11.7
+
 ## How to setup virtual environment
 
 - Create virtual environment : ```python3 -m venv venv```

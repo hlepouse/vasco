@@ -1,4 +1,5 @@
 from app.preprocessing import preprocessTargets
+from app.utils.YearMonth import YearMonth
 
 def testOneItem():
 
@@ -12,7 +13,7 @@ def testOneItem():
         }
     ]
 
-    assert preprocessTargets(targetsList) == { (2000,4) : {
+    assert preprocessTargets(targetsList) == { YearMonth(2000,4) : {
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25
@@ -38,12 +39,12 @@ def testValidTwoItemsWithRates():
     ]
 
     assert preprocessTargets(targetsList) == {
-            (2000,4) : {
+            YearMonth(2000,4) : {
                 "churnRate": 1,
                 "downgradeRate": 0.5,
                 "upgradeRate": 0.25
             },
-            (2000,5) : {
+            YearMonth(2000,5) : {
                 "churnRate": 0.5,
                 "downgradeRate": 0.5,
                 "upgradeRate": 0.25
@@ -69,7 +70,7 @@ def testDuplicates():
         }
     ]
 
-    assert preprocessTargets(targetsList) == { (2000,4) : {
+    assert preprocessTargets(targetsList) == { YearMonth(2000,4) : {
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25

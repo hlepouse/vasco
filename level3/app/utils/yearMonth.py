@@ -1,54 +1,45 @@
-# These are useful functions that deal with year/month tuples
-# These operations could have been handled with the datetime library,
-# however this lib can only handle dates (not just months), it would make the code less readable
+from dataclasses import dataclass
+import os
 
-def startEndMonths(quarter):
+# This describes a given year and month
+@dataclass(eq = True, frozen = True)
+class YearMonth:
+    year: int
+    month: int
 
-    startMonth = (quarter - 1) * 3 + 1
+    def __post_init__(self):
 
-    return startMonth, startMonth+2
+        if not (1 <= self.month <= 12):
+            raise ValueError("Month must be between 1 and 12")
+        
+        if not (int(os.getenv('YEAR_MIN')) <= self.year <= int(os.getenv('YEAR_MAX'))):
+            raise ValueError("Year must be between {} and {}".format(os.getenv('YEAR_MIN'), os.getenv('YEAR_MAX')))
+        
+    def __eq__(self, other):
 
-def previousYearMonth(year, month):
+        return self.year == other.year and self.month == other.month
 
-    if month >= 2:
-        return year, month-1
+    def __lt__(self, other):
+
+        # In python, tuple comparison is by lexical order
+        return (self.year, self.month) < (other.year, other.month)
+
+    def __le__(self, other):
+
+        # In python, tuple comparison is by lexical order
+        return (self.year, self.month) <= (other.year, other.month)
+
+    def previous(self):
+
+        if self.month > 1:
+            return YearMonth(self.year, self.month-1)
+        
+        return YearMonth(self.year-1, 12)
     
-    return year-1, 12
+    def next(self):
 
-# This is a generator that iterates between two given months
-# End year/month is included
-def yearMonthsBetween(startYear, startMonth, endYear, endMonth):
+        if self.month < 12:
+            return YearMonth(self.year, self.month+1)
+        
+        return YearMonth(self.year+1, 1)
 
-    year = startYear
-    month = startMonth
-
-    while year < endYear or (year == endYear and month <= endMonth):
-
-        yield year,month
-
-        month += 1
-
-        if month == 13:
-            year +=1
-            month = 1
-
-# End year/month is included
-def nbYearMonthsBetween(startYear, startMonth, endYear, endMonth):
-
-    return (endYear - startYear) * 12 + endMonth - startMonth + 1
-
-# Checks if there is at least one month in the provided range
-# We don't need to check for the month to be between 1 and 12, because
-# this is checked at schema validation
-def isYearMonthRangeValid(startYear, startMonth, endYear, endMonth):
-
-    if startYear > endYear:
-        return False
-    
-    if startYear < endYear:
-        return True
-    
-    if startMonth > endMonth:
-        return False
-    
-    return True

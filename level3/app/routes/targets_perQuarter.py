@@ -2,17 +2,17 @@ from flask import request, current_app
 from app.schemas import TargetPerQuarterInputSchema
 from . import trpc
 from app.computing import computeRangeMetrics, isDataAvailable
-from app.utils.yearMonth import startEndMonths
+from app.utils.YearMonthRange import YearMonthRange
 from app.utils.schema import validate
 
 def process(targets, input):
 
-    startMonth, endMonth = startEndMonths(input["quarter"])
+    yearMonthRange = YearMonthRange.fromQuarter(input["year"], input["quarter"])
 
-    if not isDataAvailable(targets, input["year"], startMonth, input["year"], endMonth):
+    if not isDataAvailable(targets, yearMonthRange):
         return {}
 
-    target = computeRangeMetrics(targets, input["year"], startMonth, input["year"], endMonth)
+    target = computeRangeMetrics(targets, yearMonthRange)
     
     target["year"] = input["year"]
     target["quarter"] = input["quarter"]

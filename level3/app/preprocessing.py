@@ -1,6 +1,7 @@
 # These are all functions necessary to process the data file at application start
 
 import os
+from app.utils.YearMonth import YearMonth
 
 def convertPercentToFloat(rate):
 
@@ -16,12 +17,11 @@ def preprocessTargets(targetsList):
 
             target[targetMetric] = convertPercentToFloat(target[targetMetric])
 
-        year = target["year"]
-        month = target["month"]
+        yearMonth = YearMonth(target["year"], target["month"])
 
         del target["year"]
         del target["month"]
 
-        targetsDict[year, month] = target
+        targetsDict[yearMonth] = target
 
     return targetsDict
