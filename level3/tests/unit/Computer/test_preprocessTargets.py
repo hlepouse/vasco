@@ -1,4 +1,4 @@
-from app.preprocessing import preprocessTargets
+from app.Computer import Computer
 from app.utils.YearMonth import YearMonth
 
 def testOneItem():
@@ -13,7 +13,9 @@ def testOneItem():
         }
     ]
 
-    assert preprocessTargets(targetsList) == { YearMonth(2000,4) : {
+    computer = Computer(targetsList, ["churnRate","downgradeRate","upgradeRate"])
+
+    assert computer.targets == { YearMonth(2000,4) : {
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25
@@ -38,7 +40,9 @@ def testValidTwoItemsWithRates():
         }
     ]
 
-    assert preprocessTargets(targetsList) == {
+    computer = Computer(targetsList, ["churnRate","downgradeRate","upgradeRate"])
+
+    assert computer.targets == {
             YearMonth(2000,4) : {
                 "churnRate": 1,
                 "downgradeRate": 0.5,
@@ -70,7 +74,9 @@ def testDuplicates():
         }
     ]
 
-    assert preprocessTargets(targetsList) == { YearMonth(2000,4) : {
+    computer = Computer(targetsList, ["churnRate","downgradeRate","upgradeRate"])
+
+    assert computer.targets == { YearMonth(2000,4) : {
             "churnRate": 1,
             "downgradeRate": 0.5,
             "upgradeRate": 0.25

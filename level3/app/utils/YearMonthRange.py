@@ -3,6 +3,7 @@ from app.utils.YearMonth import YearMonth
 
 # This describes a range between two YearMonth
 # start and end are included in the range
+# eq and frozen are required for the class to be hashable
 @dataclass(eq = True, frozen = True)
 class YearMonthRange:
     start: YearMonth
@@ -29,6 +30,7 @@ class YearMonthRange:
             yield currentYearMonth
             currentYearMonth = currentYearMonth.next()
 
+    # Quarters are between 1 and 4
     def fromQuarter(year, quarter):
 
         startMonth = (quarter - 1) * 3 + 1

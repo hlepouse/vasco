@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import os
 
 # This describes a given year and month
+# eq and frozen are required for the class to be hashable
 @dataclass(eq = True, frozen = True)
 class YearMonth:
     year: int

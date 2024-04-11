@@ -2,7 +2,7 @@ from app.utils.schema import validate
 from marshmallow import Schema, fields
 import json
 
-def test():
+def testValidate():
 
     class TestSchema(Schema):
         myField = fields.Int(required=True, validate=lambda x: 1 <= x <= 10)

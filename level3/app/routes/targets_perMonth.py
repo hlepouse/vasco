@@ -1,20 +1,19 @@
 from flask import request, current_app
 from app.schemas import TargetPerMonthInputSchema
 from . import trpc
-from app.computing import isDataAvailable, computeRangeMetrics
 from app.utils.schema import validate
 from app.utils.YearMonthRange import YearMonthRange
 from app.utils.YearMonth import YearMonth
 
-def process(targets, input):
+def process(input):
 
     yearMonth = YearMonth(input["year"], input["month"])
     yearMonthRange = YearMonthRange(yearMonth, yearMonth)
 
-    if not isDataAvailable(targets, yearMonthRange):
+    if not current_app.computer.isDataAvailable(yearMonthRange):
         return {}
 
-    target = computeRangeMetrics(targets, yearMonthRange)
+    target = current_app.computer.computeRangeMetrics(yearMonthRange)
     
     target["year"] = input["year"]
     target["month"] = input["month"]
@@ -30,6 +29,4 @@ def targets_perMonth():
     if error is not None:
         return input, error
     
-    targets = current_app.config['TARGETS']
-    
-    return process(targets, input)
+    return process(input)
